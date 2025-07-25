@@ -13,7 +13,7 @@ export default function Login () {
     const router = useRouter();
 
     const [user, setUser] = useState<User>({ username: "", isAuthenticated: false })
-    const [currentView, setCurrentView] = useState<"form" | "login" | "stats">("form")
+    // const [currentView, setCurrentView] = useState<"form" | "login" | "stats">("form")
     const [loginError, setLoginError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
@@ -29,18 +29,13 @@ export default function Login () {
             setUser({ username, isAuthenticated: true })
 
             // setCurrentView("stats")
-            router.push('/book');
+            router.push('/dashboard');
         } else {
-            setLoginError("Invalid username or password")
+            setLoginError("Usuario o contraseña incorrectos")
         }
 
         setIsLoading(false)
     }
-
-    //   const handleLogout = () => {
-    //     setUser({ username: "", isAuthenticated: false })
-    //     setCurrentView("form")
-    //   }
 
     return (
         <LoginForm onLogin={handleLogin} error={loginError} isLoading={isLoading} />

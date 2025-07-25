@@ -1,8 +1,17 @@
 "use client"
+import { useRouter } from 'next/navigation';
 import StatisticsDashboard from "@/components/mycomponents/dashboard/statistics";
 
 export default function Dashboard() {
+    const router = useRouter();
+
+    const handleLogout = () => {
+        // setUser({ username: "", isAuthenticated: false })
+        // setCurrentView("form")
+        router.push('/login');
+    }
+
     return (
-        <StatisticsDashboard onLogout={() => ""} username="Nico" />
+        <StatisticsDashboard onLogout={handleLogout} username="Admin" />
     )
 }

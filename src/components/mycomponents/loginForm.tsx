@@ -25,8 +25,8 @@ export function LoginForm ({ onLogin, error, isLoading }: LoginFormProps) {
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Enter your credentials to access the statistics area</CardDescription>
+          <CardTitle>Inicio de Sesión</CardTitle>
+          <CardDescription>Ingresa tus credenciales para acceder al área de estadísticas</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -37,11 +37,11 @@ export function LoginForm ({ onLogin, error, isLoading }: LoginFormProps) {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Usuario</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Ingrese su usuario"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -49,11 +49,11 @@ export function LoginForm ({ onLogin, error, isLoading }: LoginFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Ingrese su contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -61,12 +61,12 @@ export function LoginForm ({ onLogin, error, isLoading }: LoginFormProps) {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+              {isLoading ? "Ingresando..." : "Ingresar"}
             </Button>
           </form>
 
           <div className="mt-4 text-sm text-muted-foreground text-center">
-            <p>Demo credentials:</p>
+            <p>Demo credenciales:</p>
             <p>Username: admin | Password: password</p>
           </div>
         </CardContent>
