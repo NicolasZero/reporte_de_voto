@@ -1,3 +1,5 @@
+import ExcelJS from 'exceljs'; // Asegúrate de tener exceljs instalado: npm install exceljs
+
 interface PersonData {
     id: string;
     name: string;
@@ -10,13 +12,10 @@ interface PersonData {
     phone: string;
 }
 
-export const exportToExcelFunction = async (setIsExporting: React.Dispatch<React.SetStateAction<boolean>>, registrationData: any) => {
-    setIsExporting(true)
+export const exportToExcelFunction = async (setIsExporting: React.Dispatch<React.SetStateAction<boolean>>, registrationData: PersonData[]) => {
+    setIsExporting(true);
 
     try {
-        // Dynamic import of xlsx library
-        const XLSX = await import("xlsx")
-
         // Prepare data for Excel
         const excelData = registrationData.map((row: PersonData) => ({
             ID: row.id,
@@ -28,52 +27,51 @@ export const exportToExcelFunction = async (setIsExporting: React.Dispatch<React
             "Registration Date": new Date(row.registrationDate).toLocaleDateString(),
             Email: row.email,
             Phone: row.phone,
-        }))
+        }));
 
-        // Create workbook and worksheet
-        const workbook = XLSX.utils.book_new()
-        const worksheet = XLSX.utils.json_to_sheet(excelData)
+        // Create a new workbook
+        const workbook = new ExcelJS.Workbook();
+        // Add a worksheet
+        const worksheet = workbook.addWorksheet("Registrations");
 
-        // Set column widths
-        const columnWidths = [
-            { wch: 5 }, // ID
-            { wch: 20 }, // Full Name
-            { wch: 15 }, // ID Number
-            { wch: 15 }, // State
-            { wch: 15 }, // Municipality
-            { wch: 15 }, // Parish
-            { wch: 15 }, // Registration Date
-            { wch: 25 }, // Email
-            { wch: 15 }, // Phone
-        ]
-        worksheet["!cols"] = columnWidths
+        // Define columns and their properties, including width
+        // exceljs uses a different structure for defining columns and their widths
+        worksheet.columns = [
+            { header: "ID", key: "ID", width: 5 },
+            { header: "Full Name", key: "Full Name", width: 20 },
+            { header: "ID Number", key: "ID Number", width: 15 },
+            { header: "State", key: "State", width: 15 },
+            { header: "Municipality", key: "Municipality", width: 15 },
+            { header: "Parish", key: "Parish", width: 15 },
+            { header: "Registration Date", key: "Registration Date", width: 15 },
+            { header: "Email", key: "Email", width: 25 },
+            { header: "Phone", key: "Phone", width: 15 },
+        ];
 
-        // Add worksheet to workbook
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations")
+        // Add rows to the worksheet
+        // The addRows method automatically maps the objects to the defined columns
+        worksheet.addRows(excelData);
 
-        // Generate Excel file as array buffer (browser-compatible)
-        const excelBuffer = XLSX.write(workbook, {
-            bookType: "xlsx",
-            type: "array",
-        })
+        // Generate Excel file as array buffer
+        const excelBuffer = await workbook.xlsx.writeBuffer();
 
         // Create blob and download
         const blob = new Blob([excelBuffer], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        })
+        });
 
-        const link = document.createElement("a")
-        const url = URL.createObjectURL(blob)
-        link.setAttribute("href", url)
-        link.setAttribute("download", `registrations_${new Date().toISOString().split("T")[0]}.xlsx`)
-        link.style.visibility = "hidden"
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        URL.revokeObjectURL(url)
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `registrations_${new Date().toISOString().split("T")[0]}.xlsx`);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     } catch (error) {
-        console.error("Error exporting Excel:", error)
+        console.error("Error exporting Excel:", error);
     } finally {
-        setIsExporting(false)
+        setIsExporting(false);
     }
-}
+};

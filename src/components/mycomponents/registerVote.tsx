@@ -12,6 +12,8 @@ export function RegisterVote() {
   const [selectedState, setSelectedState] = useState("")
   const [selectedMunicipality, setSelectedMunicipality] = useState("")
 
+
+
   // Sample data - replace with your actual data
   const states = [
     "Amazonas",
@@ -105,8 +107,8 @@ export function RegisterVote() {
     <div className="flex min-h-[100vh] items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Confirma que ya votaste</CardTitle>
-          <CardDescription>Por favor ingresa tus datos</CardDescription>
+          <CardTitle>¿Ya votaste?</CardTitle>
+          <CardDescription>Por favor ingresa tus datos si ya votaste</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
