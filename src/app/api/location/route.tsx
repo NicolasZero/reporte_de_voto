@@ -1,4 +1,4 @@
-import {getAll} from "@/db/controller.location"
+import {getAll} from "@/apiController/location"
 
 export async function GET() {
     const data = await getAll()

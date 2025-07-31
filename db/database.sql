@@ -44,7 +44,7 @@ INNER JOIN municipalities as m ON v.municipality_id = m.id
 INNER JOIN parishes as p ON v.parish_id = p.id;
 
 CREATE VIEW location_view AS
-select s.state, m.municipality, p.parish from states as s
+select s.id as state_id, s.state, m.id as municipality_id, m.municipality, p.id as parish_id, p.parish from states as s
 left join municipalities as m on m.state_id = s.id
 left join parishes as p on p.municipality_id = m.id;
 

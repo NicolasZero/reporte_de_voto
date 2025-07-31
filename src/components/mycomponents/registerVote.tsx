@@ -5,101 +5,44 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export function RegisterVote() {
-  
+interface RegisterVoteProps {
+  api_url: string | undefined;
+}
+
+export function RegisterVote(props: RegisterVoteProps) {
+  const {api_url} = props 
   const [selectedState, setSelectedState] = useState("")
   const [selectedMunicipality, setSelectedMunicipality] = useState("")
 
+  const [stateValue, setState] = useState([{id: 0, state: "Cargando..."}])
+  const [municipalityValue, setMunicipality] = useState([{id: 0, state_id: 0, municipality: "Cargando..."}])
+  const [parishValue, setParish] = useState([{id: 0, municipality_id: 0, parish: "Cargando..."}])
 
-
-  // Sample data - replace with your actual data
-  const states = [
-    "Amazonas",
-    "Anzoátegui",
-    "Apure",
-    "Aragua",
-    "Barinas",
-    "Bolívar",
-    "Carabobo",
-    "Cojedes",
-    "Delta Amacuro",
-    "Distrito Capital",
-    "Falcón",
-    "Guárico",
-    "Lara",
-    "Mérida",
-    "Miranda",
-    "Monagas",
-    "Nueva Esparta",
-    "Portuguesa",
-    "Sucre",
-    "Táchira",
-    "Trujillo",
-    "Vargas",
-    "Yaracuy",
-    "Zulia",
-  ]
-
-  const municipalities = {
-    Miranda: [
-      "Baruta",
-      "Brión",
-      "Buroz",
-      "Carrizal",
-      "Chacao",
-      "El Hatillo",
-      "Guaicaipuro",
-      "Independencia",
-      "Lander",
-      "Los Salias",
-      "Páez",
-      "Paz Castillo",
-      "Pedro Gual",
-      "Plaza",
-      "Simón Bolívar",
-      "Sucre",
-      "Urdaneta",
-      "Zamora",
-    ],
-    "Distrito Capital": ["Libertador"],
-    Carabobo: [
-      "Bejuma",
-      "Carlos Arvelo",
-      "Diego Ibarra",
-      "Guacara",
-      "Juan José Mora",
-      "Libertador",
-      "Los Guayos",
-      "Miranda",
-      "Montalbán",
-      "Naguanagua",
-      "Puerto Cabello",
-      "San Diego",
-      "San Joaquín",
-      "Valencia",
-    ],
-  }
-
-  const parishes = {
-    Chacao: ["Chacao"],
-    Baruta: ["Baruta", "El Cafetal", "Las Minas de Baruta"],
-    "El Hatillo": ["El Hatillo"],
-    Sucre: [
-      "Bello Monte",
-      "Casanova",
-      "Catia La Mar",
-      "El Paraíso",
-      "La Pastora",
-      "Macarao",
-      "Petare",
-      "San Bernardino",
-    ],
-  }
+  useEffect(() => {
+    fetch(`${api_url}/location`, { method: 'GET' })
+    .then(response => response.json())
+    .then(data => {
+      setState(data.data.state)
+      setMunicipality(data.data.municipality)
+      setParish(data.data.parish)      
+    })
+    .catch(error => console.error('Error:', error));
+  }, [api_url]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    fetch(`${api_url}/vote`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ /* datos a enviar */ })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
     console.log("Form submitted")
   }
 
@@ -108,6 +51,7 @@ export function RegisterVote() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>¿Ya votaste?</CardTitle>
+          
           <CardDescription>Por favor ingresa tus datos si ya votaste</CardDescription>
         </CardHeader>
         <CardContent>
@@ -146,9 +90,9 @@ export function RegisterVote() {
                   <SelectValue placeholder="Selecciona un estado" />
                 </SelectTrigger>
                 <SelectContent>
-                  {states.map((state) => (
-                    <SelectItem key={state} value={state}>
-                      {state}
+                  {stateValue.map((state) => (
+                    <SelectItem key={state.id} value={state.id.toString()}>
+                      {state.state}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -168,9 +112,10 @@ export function RegisterVote() {
                 </SelectTrigger>
                 <SelectContent>
                   {selectedState &&
-                    municipalities[selectedState as keyof typeof municipalities]?.map((municipality) => (
-                      <SelectItem key={municipality} value={municipality}>
-                        {municipality}
+                    municipalityValue.map((municipality) => (
+                      municipality.state_id === parseInt(selectedState) &&
+                      <SelectItem key={municipality.id} value={municipality.id.toString()}>
+                        {municipality.municipality}
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -188,9 +133,10 @@ export function RegisterVote() {
                 </SelectTrigger>
                 <SelectContent>
                   {selectedMunicipality &&
-                    parishes[selectedMunicipality as keyof typeof parishes]?.map((parish) => (
-                      <SelectItem key={parish} value={parish}>
-                        {parish}
+                    parishValue.map((parish) => (
+                      parish.municipality_id === parseInt(selectedMunicipality) &&
+                      <SelectItem key={parish.id} value={parish.id.toString()}>
+                        {parish.parish}
                       </SelectItem>
                     ))}
                 </SelectContent>
