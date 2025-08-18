@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS votes (
     name varchar not null,
     id_number integer not null unique,
     email varchar not null unique,
-    phone integer not null unique,
+    phone varchar not null unique,
     gender_id integer not null,
     state_id integer not null,
     municipality_id integer not null,

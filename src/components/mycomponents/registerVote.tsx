@@ -12,7 +12,9 @@ interface RegisterVoteProps {
 }
 
 export function RegisterVote(props: RegisterVoteProps) {
-  const {api_url} = props 
+  const {api_url} = props
+  const gender = [{id:1,name:'Mujer'},{id:2,name:'Hombre'},{id:3,name:'Otro'}]
+
   const [selectedState, setSelectedState] = useState("")
   const [selectedMunicipality, setSelectedMunicipality] = useState("")
 
@@ -31,20 +33,29 @@ export function RegisterVote(props: RegisterVoteProps) {
     .catch(error => console.error('Error:', error));
   }, [api_url]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    fetch(`${api_url}/vote`, {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // const form = e.target as HTMLFormElement;
+    const formData = new FormData(e.currentTarget);
+
+    // Convertir FormData a un objeto JSON
+    const data = Object.fromEntries(formData.entries());
+
+    await fetch(`${api_url}/vote`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+         'Content-Type': 'application/json' // Activar este header
       },
-      body: JSON.stringify({ /* datos a enviar */ })
+      body: JSON.stringify(data) // Enviar el objeto JSON
     })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-    console.log("Form submitted")
-  }
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));
+    
+    console.log("Form submitted");
+}
+
 
   return (
     <div className="flex min-h-[100vh] items-center justify-center p-4 bg-background">
@@ -58,35 +69,56 @@ export function RegisterVote(props: RegisterVoteProps) {
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nombre Completo</Label>
-              <Input id="name" autoComplete="none" type="text" placeholder="Introduce tu nombre" required />
+              <Input id="name" name="name" autoComplete="none" type="text" placeholder="Introduce tu nombre" required />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="ic">Cédula</Label>
-              <Input id="ic" autoComplete="none" type="text" placeholder="Introduce tu cédula" required />
+              <Input id="ic" name="ic" autoComplete="none" type="text" placeholder="Introduce tu cédula" required />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="phone">Teléfono</Label>
-              <Input id="phone" autoComplete="none" type="text" placeholder="Introduce tu teléfono" required />
+              <Input id="phone" name="phone" autoComplete="none" type="text" placeholder="Introduce tu teléfono" required />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Correo</Label>
-              <Input id="email" autoComplete="none" type="text" placeholder="Introduce tu correo" required />
+              <Input id="email" name="email" autoComplete="none" type="text" placeholder="Introduce tu correo" required />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="gender">Genero</Label>
+              <Select
+                required
+                name="gender"
+
+              >
+                <SelectTrigger className="w-full" id="gender">
+                  <SelectValue placeholder="Selecciona un genero" />
+                </SelectTrigger>
+                <SelectContent>
+                  {gender.map((gender) => (
+                    <SelectItem key={gender.id} value={gender.id.toString()}>
+                      {gender.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="state">Estado</Label>
               <Select
                 required
+                name="state"
                 value={selectedState}
                 onValueChange={(value) => {
                   setSelectedState(value)
                   setSelectedMunicipality("")
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full" id="state">
                   <SelectValue placeholder="Selecciona un estado" />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,11 +135,12 @@ export function RegisterVote(props: RegisterVoteProps) {
               <Label htmlFor="municipality">Municipio</Label>
               <Select
                 required
+                name="municipality"
                 value={selectedMunicipality} 
                 onValueChange={setSelectedMunicipality} 
                 disabled={!selectedState}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full" id="municipality">
                   <SelectValue placeholder="Selecciona un municipio" />
                 </SelectTrigger>
                 <SelectContent>
@@ -126,9 +159,10 @@ export function RegisterVote(props: RegisterVoteProps) {
               <Label htmlFor="parish">Parroquia</Label>
               <Select 
                 required
+                name="parish"
                 disabled={!selectedMunicipality}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full" id="parish">
                   <SelectValue placeholder="Selecciona una parroquia" />
                 </SelectTrigger>
                 <SelectContent>
