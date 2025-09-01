@@ -1,6 +1,6 @@
 export interface Vote {
     name: string;
-    id_number: number;
+    ic: number;
     email: string;
     phone: string;
     gender: number;

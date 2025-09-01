@@ -7,8 +7,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import { useEffect, useState } from "react";
 
+import { toast } from "sonner"
+import { Toaster } from "@/components/ui/sonner"
+
 interface RegisterVoteProps {
   api_url: string | undefined;
+}
+
+interface State {
+  id: number;
+  state: string;
+}
+interface Municipality {
+  id: number;
+  state_id: number;
+  municipality: string;
+}
+interface Parish {
+  id: number;
+  municipality_id: number;
+  parish: string;
 }
 
 export function RegisterVote(props: RegisterVoteProps) {
@@ -18,17 +36,20 @@ export function RegisterVote(props: RegisterVoteProps) {
   const [selectedState, setSelectedState] = useState("")
   const [selectedMunicipality, setSelectedMunicipality] = useState("")
 
-  const [stateValue, setState] = useState([{id: 0, state: "Cargando..."}])
-  const [municipalityValue, setMunicipality] = useState([{id: 0, state_id: 0, municipality: "Cargando..."}])
-  const [parishValue, setParish] = useState([{id: 0, municipality_id: 0, parish: "Cargando..."}])
+  const [stateValue, setState] = useState<State[]>([])
+  const [municipalityValue, setMunicipality] = useState<Municipality[]>([])
+  const [parishValue, setParish] = useState<Parish[]>([])
 
   useEffect(() => {
     fetch(`${api_url}/location`, { method: 'GET' })
     .then(response => response.json())
     .then(data => {
-      setState(data.data.state)
-      setMunicipality(data.data.municipality)
-      setParish(data.data.parish)      
+      // console.log(data);
+      if (data.data) {
+        setState(data.data.state)
+        setMunicipality(data.data.municipality)
+        setParish(data.data.parish)      
+      }
     })
     .catch(error => console.error('Error:', error));
   }, [api_url]);
@@ -36,8 +57,7 @@ export function RegisterVote(props: RegisterVoteProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // const form = e.target as HTMLFormElement;
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
 
     // Convertir FormData a un objeto JSON
     const data = Object.fromEntries(formData.entries());
@@ -50,19 +70,24 @@ export function RegisterVote(props: RegisterVoteProps) {
       body: JSON.stringify(data) // Enviar el objeto JSON
     })
     .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
-    
-    console.log("Form submitted");
+    .then(data => {
+      if (data.error) return toast.error(data.error)
+      toast.success('Formulario enviado correctamente')
+    })
+    .catch(error => { 
+      console.error('Error:', error);
+      // if (data.error) return setIsError(true)
+      toast.error('Error al enviar el formulario')
+    });
 }
 
 
   return (
+  <>
     <div className="flex min-h-[100vh] items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>¿Ya votaste?</CardTitle>
-          
           <CardDescription>Por favor ingresa tus datos si ya votaste</CardDescription>
         </CardHeader>
         <CardContent>
@@ -184,5 +209,7 @@ export function RegisterVote(props: RegisterVoteProps) {
         </CardContent>
       </Card>
     </div>
+    <Toaster />
+  </>
   )
 }
