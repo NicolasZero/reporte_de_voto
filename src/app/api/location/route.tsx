@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import {getAll} from "@/apiController/location"
+import {getAll} from "@/services/location"
 
 export async function GET() {
     try{

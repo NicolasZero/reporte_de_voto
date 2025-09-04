@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from 'next/navigation';
-import StatisticsDashboard from "@/components/mycomponents/dashboard/statistics";
+import StatisticsDashboard from "@/components/dashboard/statistics";
 
 export default function Dashboard() {
     const router = useRouter();

@@ -33,8 +33,31 @@ CREATE TABLE IF NOT EXISTS parishes(
     parish varchar NOT NULL
 );
 
--- Create views
+CREATE TABLE IF NOT EXISTS users(
+    id integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY (START WITH 1),
+    username varchar not null unique,
+    password varchar not null,
+    name varchar not null,
+    lastname varchar not null,
+    role_id integer not null
+);
 
+CREATE TABLE IF NOT EXISTS roles(
+    id integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY (START WITH 1),
+    role varchar not null
+);
+
+ALTER TABLE votes ADD FOREIGN KEY (gender_id) REFERENCES genders(id);
+ALTER TABLE votes ADD FOREIGN KEY (state_id) REFERENCES states(id);
+ALTER TABLE votes ADD FOREIGN KEY (municipality_id) REFERENCES municipalities(id);
+ALTER TABLE votes ADD FOREIGN KEY (parish_id) REFERENCES parishes(id);
+
+ALTER TABLE municipalities ADD FOREIGN KEY (state_id) REFERENCES states(id);
+ALTER TABLE parishes ADD FOREIGN KEY (municipality_id) REFERENCES municipalities(id);
+
+ALTER TABLE users ADD FOREIGN KEY (role_id) REFERENCES roles(id);
+
+-- Create views
 CREATE VIEW votes_view AS 
 SELECT v.id, v.name, v.id_number, v.email, v.phone, v.gender_id, g.gender, v.state_id, s.state, v.municipality_id, m.municipality, v.parish_id, p.parish
 FROM votes as v
@@ -48,8 +71,11 @@ select s.id as state_id, s.state, m.id as municipality_id, m.municipality, p.id 
 left join municipalities as m on m.state_id = s.id
 left join parishes as p on p.municipality_id = m.id;
 
--- insert genders, states, municipalities, parishes
+-- insert users and roles
+INSERT INTO users (username, password, name, lastname, role_id) VALUES ('admin', 'password', 'Admin', 'Apellido', 1);
+INSERT INTO roles (role) VALUES ('admin'),('user');
 
+-- insert genders, states, municipalities, parishes
 INSERT INTO genders (gender) VALUES ('Mujer'),('Hombre'),('Otro');
 
 INSERT INTO states (state) VALUES ('CARACAS'),('ANZOATEGUI'),('APURE'),('ARAGUA'),('BARINAS'),('BOLIVAR'),('CARABOBO'),('COJEDES'),('FALCON'),('GUARICO'),('LARA'),('MERIDA'),('MIRANDA'),('MONAGAS'),('NUEVA ESPARTA'),('PORTUGUESA'),('SUCRE'),('TACHIRA'),('TRUJILLO'),('YARACUY'),('ZULIA'),('AMAZONAS'),('DELTA AMACURO'),('VARGAS');

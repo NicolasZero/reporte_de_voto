@@ -4,32 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {State, Municipality, Parish, ApiUrl } from "@/types/vote"
 
 import { useEffect, useState } from "react";
 
 import { toast } from "sonner"
 import { Toaster } from "@/components/ui/sonner"
 
-interface RegisterVoteProps {
-  api_url: string | undefined;
-}
-
-interface State {
-  id: number;
-  state: string;
-}
-interface Municipality {
-  id: number;
-  state_id: number;
-  municipality: string;
-}
-interface Parish {
-  id: number;
-  municipality_id: number;
-  parish: string;
-}
-
-export function RegisterVote(props: RegisterVoteProps) {
+export function RegisterVote(props: ApiUrl) {
   const {api_url} = props
   const gender = [{id:1,name:'Mujer'},{id:2,name:'Hombre'},{id:3,name:'Otro'}]
 
@@ -40,6 +22,7 @@ export function RegisterVote(props: RegisterVoteProps) {
   const [municipalityValue, setMunicipality] = useState<Municipality[]>([])
   const [parishValue, setParish] = useState<Parish[]>([])
 
+  // Obtener los estados, municipios y parroquias
   useEffect(() => {
     fetch(`${api_url}/location`, { method: 'GET' })
     .then(response => response.json())
@@ -54,6 +37,7 @@ export function RegisterVote(props: RegisterVoteProps) {
     .catch(error => console.error('Error:', error));
   }, [api_url]);
 
+  // Función para enviar el formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
