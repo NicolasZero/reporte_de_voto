@@ -11,7 +11,11 @@ export default function Dashboard() {
         router.push('/login');
     }
 
+    const api_url = process.env.NEXT_PUBLIC_API_URL ?? '';
+  
+    if (!api_url) return <div>API URL not found</div>;
+
     return (
-        <StatisticsDashboard onLogout={handleLogout} username="Admin" />
+        <StatisticsDashboard onLogout={handleLogout} username="Admin" api_url={process.env.NEXT_PUBLIC_API_URL}/>
     )
 }

@@ -72,8 +72,8 @@ left join municipalities as m on m.state_id = s.id
 left join parishes as p on p.municipality_id = m.id;
 
 -- insert users and roles
-INSERT INTO users (username, password, name, lastname, role_id) VALUES ('admin', 'password', 'Admin', 'Apellido', 1);
 INSERT INTO roles (role) VALUES ('admin'),('user');
+INSERT INTO users (username, password, name, lastname, role_id) VALUES ('admin', 'password', 'Admin', 'Apellido', 1);
 
 -- insert genders, states, municipalities, parishes
 INSERT INTO genders (gender) VALUES ('Mujer'),('Hombre'),('Otro');

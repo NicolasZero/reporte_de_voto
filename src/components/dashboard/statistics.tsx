@@ -35,6 +35,18 @@ export default function StatisticsDashboard({ onLogout, username }: StatisticsDa
   useEffect(() => {
     // In a real app, this would be an API call
     const fetchData = async () => {
+      fetch(`${api_url}/vote`, { method: 'GET' })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        // if (data.data) {
+        //   setState(data.data.state)
+        //   setMunicipality(data.data.municipality)
+        //   setParish(data.data.parish)      
+        // }
+      })
+      .catch(error => console.error('Error:', error));
+
       // await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
       const sampleData: Registration[] = [
         {

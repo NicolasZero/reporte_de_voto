@@ -68,10 +68,10 @@ export function LoginForm ({ onLogin, error, isLoading }: LoginFormProps) {
               </Button>
             </form>
 
-            <div className="mt-4 text-sm text-muted-foreground text-center">
+          {/*  <div className="mt-4 text-sm text-muted-foreground text-center">
               <p>Demo credenciales:</p>
               <p>Username: admin | Password: password</p>
-            </div>
+            </div>*/}
           </CardContent>
         </Card>
       </div>

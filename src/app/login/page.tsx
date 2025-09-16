@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useRouter } from 'next/navigation';
 import { LoginForm } from "@/components/login/loginForm"
+import { signIn } from 'next-auth/react'
 import { toast } from "sonner"
 
 interface User {
@@ -25,25 +26,10 @@ export default function Login () {
         setIsLoading(true)
         setLoginError("")
 
-        const data = {username, password}
-
-
-        await fetch(`${api_url}/auth`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json' // Activar este header
-            },
-            body: JSON.stringify(data) // Enviar el objeto JSON
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.error) return setLoginError("Usuario o contraseña incorrectos")
-          toast.success('Inicio de sesión exitoso')
-        })
-        .catch(error => { 
-            // console.log(error);
-            setLoginError("Usuario o contraseña incorrectos")
-        });
+        const res = await signIn('credentials',
+            {username, password, redirect: false}
+        )
+        
 
         setIsLoading(false)
     }
@@ -69,5 +55,5 @@ export default function Login () {
     }
 
     
-    return <LoginForm onLogin={handleLogin} error={loginError} isLoading={isLoading} />
+    return <LoginForm onLogin={handleSubmit} error={loginError} isLoading={isLoading} />
 }
