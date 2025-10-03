@@ -24,7 +24,11 @@ const authOptions = {
 				}
 			}
 		})
-	]
+	],
+	pages: {
+		signIn: "/auth/login"
+	},
+	// secret: process.env.JWT_SECRET
 }
 
 const handler = NextAuth(authOptions)

@@ -30,6 +30,12 @@ export default function Login () {
             {username, password, redirect: false}
         )
         
+        // console.log(res)
+        if (res.error) {
+           setLoginError("Usuario o contraseña incorrectos")
+        } else {
+            router.push('/dashboard');
+        }
 
         setIsLoading(false)
     }

@@ -14,26 +14,25 @@ const pool = new Pool({
 export async function auth(user,pass) {
     try {
         // Busca el usuario en la BD
-        const resp = await pool.query('SELECT * FROM users WHERE username = $1', [user]);
+        const userFound = await pool.query('SELECT * FROM users WHERE username = $1', [user]);
 
         // Si no hay coincidencia termina el proceso, retorna null 
-        if (!resp.rows[0]) return null
+        if (!userFound.rows[0]) throw Error("Usuario o contraseña incorrecto")
         
         // Guarda el resultado encontrado en una variable
-        const data = resp.rows[0]
+        const data = userFound.rows[0]
 
         // Comprueba que la contraseña sea correcta
         const veriPass = await compare(pass,data.password)
 
         // Si la contraseña no es correcta termina el proceso, retorna null
-        if (!veriPass) return null
-
+        if (!veriPass) throw Error("Usuario o contraseña incorrecto")
         // Encia los datos del usuario
-        return {data, error: null};
+        return {data};
 
     } catch (err) {
         console.error('Error:', err)
         // return null
-        return {data: null, error: 'Error obteniendo los datos de la base de datos'};
+        throw Error("Usuario o contraseña incorrecto") ;
     }
 }
