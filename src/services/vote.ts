@@ -13,7 +13,7 @@ const pool = new Pool({
 
 export async function getAll() {
     try {
-        const res = await pool.query('SELECT * FROM votes');
+        const res = await pool.query('SELECT * FROM votes_view');
         return {data: res.rows, error: null, status: 200};
     } catch (err) {
         console.error('Error connecting or querying database:', err);

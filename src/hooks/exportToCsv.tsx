@@ -1,13 +1,14 @@
 interface RegistrationData {
     id: number;
     name: string;
-    idNumber: string;
+    id_number: string;
+    gender: string;
     state: string;
     municipality: string;
     parish: string;
-    registrationDate: string;
     email: string;
     phone: string;
+    create_on: string;
 }
 
 export const exportToCsvFunction = (
@@ -19,14 +20,15 @@ export const exportToCsvFunction = (
     try {
         const headers = [
             "ID",
-            "Full Name",
-            "ID Number",
-            "State",
-            "Municipality",
-            "Parish",
-            "Registration Date",
-            "Email",
-            "Phone",
+            "Nombre",
+            "Cedula",
+            "Genero",
+            "Estado",
+            "Municipio",
+            "Parroquia",
+            "Correo",
+            "Telefono",
+            "Registro"
         ];
 
         // *** CAMBIO CLAVE 1: Usar punto y coma como delimitador ***
@@ -46,13 +48,14 @@ export const exportToCsvFunction = (
             return [
                 escapeAndQuote(row.id),
                 escapeAndQuote(row.name),
-                escapeAndQuote(row.idNumber),
+                escapeAndQuote(row.id_number),
+                escapeAndQuote(row.gender),
                 escapeAndQuote(row.state),
                 escapeAndQuote(row.municipality),
                 escapeAndQuote(row.parish),
-                escapeAndQuote(new Date(row.registrationDate).toLocaleDateString("es-VE")), // Formato de fecha para Venezuela
                 escapeAndQuote(row.email),
                 escapeAndQuote(row.phone),
+                escapeAndQuote(new Date(row.create_on).toLocaleDateString("es-VE")), // Formato de fecha para Venezuela
             ].join(CSV_DELIMITER);
         });
 

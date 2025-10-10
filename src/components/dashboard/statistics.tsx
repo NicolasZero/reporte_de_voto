@@ -11,12 +11,17 @@ import { useState, useEffect, useMemo } from "react";
 // Define interface for registration data
 interface Registration {
   id: number;
+  id_number: number;
   name: string;
-  idNumber: string;
+  gender: string;
+  gender_id: number;
   state: string;
+  state_id: number;
   municipality: string;
+  municipality_id: number;
   parish: string;
-  registrationDate: string;
+  parish_id: number;
+  create_on: string;
   email: string;
   phone: string;
 }
@@ -24,9 +29,10 @@ interface Registration {
 interface StatisticsDashboardProps {
   onLogout: () => void;
   username: string;
+  api_url: string;
 }
 
-export default function StatisticsDashboard({ onLogout, username }: StatisticsDashboardProps) {
+export default function StatisticsDashboard({ onLogout, username, api_url }: StatisticsDashboardProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [registrationData, setRegistrationData] = useState<Registration[]>([]);
   // const { toast } = useToast(); // If using shadcn/ui toast
@@ -38,107 +44,10 @@ export default function StatisticsDashboard({ onLogout, username }: StatisticsDa
       fetch(`${api_url}/vote`, { method: 'GET' })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        // if (data.data) {
-        //   setState(data.data.state)
-        //   setMunicipality(data.data.municipality)
-        //   setParish(data.data.parish)      
-        // }
+        // console.log(data);
+        setRegistrationData(data.data);
       })
       .catch(error => console.error('Error:', error));
-
-      // await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-      const sampleData: Registration[] = [
-        {
-          id: 1,
-          name: "María González",
-          idNumber: "V-12345678",
-          state: "Miranda",
-          municipality: "Chacao",
-          parish: "Chacao",
-          registrationDate: "2024-01-15T10:30:00Z",
-          email: "maria.gonzalez@email.com",
-          phone: "+58-212-1234567",
-        },
-        {
-          id: 2,
-          name: "Carlos Rodríguez",
-          idNumber: "V-87654321",
-          state: "Carabobo",
-          municipality: "Valencia",
-          parish: "San José",
-          registrationDate: "2024-01-14T14:20:00Z",
-          email: "carlos.rodriguez@email.com",
-          phone: "+58-241-7654321",
-        },
-        {
-          id: 3,
-          name: "Ana Martínez",
-          idNumber: "V-11223344",
-          state: "Distrito Capital",
-          municipality: "Libertador",
-          parish: "Catedral",
-          registrationDate: "2024-01-13T09:15:00Z",
-          email: "ana.martinez@email.com",
-          phone: "+58-212-1122334",
-        },
-        {
-          id: 4,
-          name: "Luis Pérez",
-          idNumber: "V-55667788",
-          state: "Miranda",
-          municipality: "Baruta",
-          parish: "Baruta",
-          registrationDate: "2024-01-12T16:45:00Z",
-          email: "luis.perez@email.com",
-          phone: "+58-212-5566778",
-        },
-        {
-          id: 5,
-          name: "Carmen Silva",
-          idNumber: "V-99887766",
-          state: "Carabobo",
-          municipality: "San Diego",
-          parish: "San Diego",
-          registrationDate: "2024-01-11T11:30:00Z",
-          email: "carmen.silva@email.com",
-          phone: "+58-241-9988776",
-        },
-        {
-          id: 6,
-          name: "Roberto Fernández",
-          idNumber: "V-44556677",
-          state: "Miranda",
-          municipality: "El Hatillo",
-          parish: "El Hatillo",
-          registrationDate: "2024-01-10T13:20:00Z",
-          email: "roberto.fernandez@email.com",
-          phone: "+58-212-4455667",
-        },
-        {
-          id: 7,
-          name: "Isabella Torres",
-          idNumber: "V-33445566",
-          state: "Carabobo",
-          municipality: "Naguanagua",
-          parish: "Naguanagua",
-          registrationDate: "2024-01-09T08:10:00Z",
-          email: "isabella.torres@email.com",
-          phone: "+58-241-3344556",
-        },
-        {
-          id: 8,
-          name: "Diego Morales",
-          idNumber: "V-22334455",
-          state: "Miranda",
-          municipality: "Sucre",
-          parish: "Petare",
-          registrationDate: "2024-01-08T15:40:00Z",
-          email: "diego.morales@email.com",
-          phone: "+58-212-2233445",
-        },
-      ];
-      setRegistrationData(sampleData);
     };
     fetchData();
   }, []);
@@ -147,7 +56,7 @@ export default function StatisticsDashboard({ onLogout, username }: StatisticsDa
   const stats = useMemo(() => {
     const totalRegistrations = registrationData.length;
     const uniqueStates = new Set(registrationData.map(data => data.state)).size;
-
+    
     const stateCounts = registrationData.reduce((acc, data) => {
       acc[data.state] = (acc[data.state] || 0) + 1;
       return acc;
@@ -308,7 +217,7 @@ export default function StatisticsDashboard({ onLogout, username }: StatisticsDa
                       <div className="flex flex-wrap items-center gap-4"> {/* Use flex-wrap for responsiveness */}
                         <div>
                           <p className="font-medium">{registration.name}</p>
-                          <p className="text-sm text-muted-foreground">ID: {registration.idNumber}</p>
+                          <p className="text-sm text-muted-foreground">ID: {registration.id_number}</p>
                         </div>
                         <div>
                           <p className="text-sm">{registration.state}</p>
@@ -321,7 +230,7 @@ export default function StatisticsDashboard({ onLogout, username }: StatisticsDa
                       </div>
                     </div>
                     <div className="text-sm text-muted-foreground ml-4"> {/* Add ml-4 for spacing */}
-                      {new Date(registration.registrationDate).toLocaleDateString()}
+                      {new Date(registration.create_on).toLocaleDateString()}
                     </div>
                   </div>
                 ))}

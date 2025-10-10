@@ -1,15 +1,16 @@
 import ExcelJS from 'exceljs'; // Asegúrate de tener exceljs instalado: npm install exceljs
 
-interface PersonData {
-    id: string;
+interface RegistrationData {
+    id: number;
     name: string;
-    idNumber: string;
+    id_number: string;
+    gender: string;
     state: string;
     municipality: string;
     parish: string;
-    registrationDate: string;
     email: string;
     phone: string;
+    create_on: string;
 }
 
 export const exportToExcelFunction = async (setIsExporting: React.Dispatch<React.SetStateAction<boolean>>, registrationData: PersonData[]) => {
@@ -19,14 +20,15 @@ export const exportToExcelFunction = async (setIsExporting: React.Dispatch<React
         // Prepare data for Excel
         const excelData = registrationData.map((row: PersonData) => ({
             ID: row.id,
-            "Full Name": row.name,
-            "ID Number": row.idNumber,
-            State: row.state,
-            Municipality: row.municipality,
-            Parish: row.parish,
-            "Registration Date": new Date(row.registrationDate).toLocaleDateString(),
-            Email: row.email,
-            Phone: row.phone,
+            "Nombre": row.name,
+            "Cedula": row.id_number,
+            "Genero": row.gender,
+            "Estado": row.state,
+            "Municipio": row.municipality,
+            "Parroquia": row.parish,
+            "Correo": row.email,
+            "Telefono": row.phone,
+            "Registro": new Date(row.create_on).toLocaleDateString()
         }));
 
         // Create a new workbook
@@ -38,14 +40,14 @@ export const exportToExcelFunction = async (setIsExporting: React.Dispatch<React
         // exceljs uses a different structure for defining columns and their widths
         worksheet.columns = [
             { header: "ID", key: "ID", width: 5 },
-            { header: "Full Name", key: "Full Name", width: 20 },
-            { header: "ID Number", key: "ID Number", width: 15 },
-            { header: "State", key: "State", width: 15 },
-            { header: "Municipality", key: "Municipality", width: 15 },
-            { header: "Parish", key: "Parish", width: 15 },
-            { header: "Registration Date", key: "Registration Date", width: 15 },
-            { header: "Email", key: "Email", width: 25 },
-            { header: "Phone", key: "Phone", width: 15 },
+            { header: "Nombre", key: "Nombre", width: 20 },
+            { header: "Cedula", key: "Cedula", width: 15 },
+            { header: "Estado", key: "Estado", width: 15 },
+            { header: "Municipio", key: "Municipio", width: 15 },
+            { header: "Parroquia", key: "Parroquia", width: 15 },
+            { header: "Registro", key: "Registro", width: 15 },
+            { header: "Correo", key: "Correo", width: 25 },
+            { header: "Telefono", key: "Telefono", width: 15 },
         ];
 
         // Add rows to the worksheet

@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS votes (
     gender_id integer not null,
     state_id integer not null,
     municipality_id integer not null,
-    parish_id integer not null
+    parish_id integer not null,
+    create_on date DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE IF NOT EXISTS genders(
@@ -59,7 +60,7 @@ ALTER TABLE users ADD FOREIGN KEY (role_id) REFERENCES roles(id);
 
 -- Create views
 CREATE VIEW votes_view AS 
-SELECT v.id, v.name, v.id_number, v.email, v.phone, v.gender_id, g.gender, v.state_id, s.state, v.municipality_id, m.municipality, v.parish_id, p.parish
+SELECT v.id, v.name, v.id_number, v.email, v.phone, v.gender_id, g.gender, v.state_id, s.state, v.municipality_id, m.municipality, v.parish_id, p.parish, v.create_on
 FROM votes as v
 INNER JOIN genders as g ON v.gender_id = g.id
 INNER JOIN states as s ON v.state_id = s.id

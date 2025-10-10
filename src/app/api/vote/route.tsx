@@ -3,7 +3,7 @@ import {getAll, create} from "@/services/vote"
 
 export async function GET() {
     const data = await getAll()
-    if(data.error) return NextResponse.json({error: data.error, status: "FAIL"},{status:500})
+    if(data.error) return NextResponse.json({error: data.error},{status:500})
     return NextResponse.json({data: data.data})
 }
 
